@@ -1,50 +1,24 @@
+import java.util.Random;
+
+
 /**
  * Created by jmijeon on 26/11/2015.
  */
 public class Personnage {
-    private String nom;
-    int niveau;
-    int pointsXP;
-    int pointsVie;
-    int force;
+    protected String nom;
+    protected int niveau = 0;
+    protected int pointsXP = 0;
+    protected int pointsVie = 10;
+    protected int force = 5;
+    protected final int _MAXPoint = 20;
 
-    //Dans la version PHP de l'exercice il fallait déclarer des constantes PERSONNAGE_FRAPPE, PERSONNAGE_TUE et CEST_MOI, qu'en est-il en java?
-
-    public Personnage(String nom, int niveau, int pointsVie, int pointsXP, int force) {
+    public Personnage(String nom) {
         this.nom = nom;
-        this.niveau = 0;
-        this.pointsVie = 10;
-        this.pointsXP = 0;
-        this.force = 5;
-    }
-
-    /**
-     * SETTERS
-     * @return
-     */
-
-    public void setNom(String nom) {
-        this.nom = nom;
-    }
-
-    public void setNiveau(int niveau) {
-        this.niveau = niveau;
-    }
-
-    public void setPointsVie(int pointsVie) {
-        this.pointsVie = pointsVie;
-    }
-
-    public void setForce(int force) {
-        this.force = force;
-    }
-
-    public void setPointsXP(int pointsXP) {
-        this.pointsXP = pointsXP;
     }
 
     /**
      * GETTERS
+     *
      * @return
      */
     public String getNom() {
@@ -69,37 +43,58 @@ public class Personnage {
 
     /**
      * Déclaration des méthodes
+     *
      * @param PersoAFrapper
      */
     public void frapper(Personnage PersoAFrapper) {
-        this.frapper(PersoAFrapper);
         //random pour indiquer si le coup a porté ou non
-        //Si le coup a porté :
-        this.gagnerXP();
+        if (new Random().nextInt(2) == 1) {
+            int pointaperdre = new Random().nextInt(2);
+            PersoAFrapper.perdreVie(pointaperdre);
+            //Si le coup a porté :
+            this.gagnerXP();
+        }
+
+
     }
 
-    public int perdreVie(int pointsVie) {
-        pointsVie --;
-        if(pointsVie == 0)
+    protected int perdreVie(int pointaperdre) {
+        this.pointsVie = this.pointsVie - pointaperdre;
+        if (this.pointsVie <= 0)
             System.out.println("Game over");
         return pointsVie;
     }
 
-    public void gagnerXP(){
-        if(pointsXP<100){
-            pointsXP++;
+    protected void gagnerXP() {
+        if (this.pointsXP < _MAXPoint) {
+            this.pointsXP++;
         } else {
             this.gagnerNiveau();
         }
     }
 
-    public void gagnerNiveau(){
-        if(pointsXP==100)
-        System.out.println("Vous avez gagné un niveau!");
-        this.pointsVie = pointsVie+5;
-        this.force = force+5;
+    protected void gagnerNiveau() {
+        if (pointsXP == _MAXPoint) {
+            System.out.println("Félicitations "+this.getNom()+", vous avez gagné un niveau!");
+        }
+        this.pointsVie = pointsVie + 5;
+        this.force = force + 5;
         this.pointsXP = 0;
-        niveau++;
+        this.niveau++;
 
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Nom : => " + nom + ',');
+        sb.append("Niveau : => " + niveau + ',');
+        sb.append("PointsXP : => " + pointsXP + ',');
+        sb.append("PointsVie : => " + pointsVie + ',');
+        sb.append("Force : => " + force );
+
+        return sb.toString();
+    }
+
+
 }
